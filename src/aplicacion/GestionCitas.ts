@@ -22,12 +22,12 @@ async registrarCita(data: { nombrePaciente: string, fechaCita: string, motivoCit
             idMedicoSimulado
         );
 
-        await this.agendaRepo.guardarCita(cita);
+        await this.agendaRepo.guardar(cita);
         return cita;
     };
 
     async obtenerResumenCitas(): Promise<string[]> {
-        const citas = await this.agendaRepo.obtenerCitas();
+        const citas = await this.agendaRepo.listarTodas();
         return citas.map(cita => cita.obtenerResumen());
     };
 };
