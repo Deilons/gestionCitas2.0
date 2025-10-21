@@ -30,4 +30,26 @@ async registrarCita(data: { nombrePaciente: string, fechaCita: string, motivoCit
         const citas = await this.agendaRepo.listarTodas();
         return citas.map(cita => cita.obtenerResumen());
     };
+
+    async obtenerDetalleCita(idCita: string): Promise<ICita | null> {
+        return this.agendaRepo.obtenerPorId(idCita);
+    };
+
+    async eliminarCita(idCita: string): Promise<void> {
+        await this.agendaRepo.eliminar(idCita);
+    };
+
+    async actualizarCita(idCita: string, data: { nombrePaciente: string, fechaCita: string, motivoCita?: string }): Promise<ICita> {
+        const citaActualizada = new Cita(
+        new Date(data.fechaCita), 
+        data.motivoCita || "Sin especificar", 
+        data.nombrePaciente, 
+        "Dr. Hexagonal (Simulado)", 
+        "PAC-001", 
+        "MED-001"
+        );
+        await this.agendaRepo.guardar(citaActualizada);
+        return citaActualizada;
+    };
+    
 };
