@@ -107,6 +107,26 @@ export function CitasController(gestionCitas: IGestionCitas) {
                 return { error: errorMessage };
             }
         });
+            // DELETE /citas/:id: Eliminar una cita (DELETE)
+
+        fastify.delete('/citas/:id', {
+                schema: {
+                    params: idParamSchema,
+                    response: {
+                        204: { type: 'null' },
+                        404: errorResponseSchema
+                    }
+                }
+            }, async (request, reply) => {
+                const params = request.params as { id: string };
+                try {
+                    await gestionCitas.eliminarCita(params.id);
+                    reply.code(204).send();
+                } catch (error) {
+                    const errorMessage = (error instanceof Error) ? error.message : "Error de eliminacion desconocido";
+                    reply.code(404).send({ error: errorMessage });
+                }
+            });
 
         // PUT /citas/:id: Actualizar una cita (UPDATE)
         fastify.put('/citas/:id', {
@@ -140,27 +160,7 @@ export function CitasController(gestionCitas: IGestionCitas) {
                 };
                 reply.code(code).send({ error: errorMessage });
                 return;
-            };
-
-            // DELETE /citas/:id: Eliminar una cita (DELETE)
-            fastify.delete('/citas/:id', {
-                schema: {
-                    params: idParamSchema,
-                    response: {
-                        204: { type: 'null' },
-                        404: errorResponseSchema
-                    }
-                }
-            }, async (request, reply) => {
-                const params = request.params as { id: string };
-                try {
-                    await gestionCitas.eliminarCita(params.id);
-                    reply.code(204).send();
-                } catch (error) {
-                    const errorMessage = (error instanceof Error) ? error.message : "Error de eliminacion desconocido";
-                    reply.code(404).send({ error: errorMessage });
-                }
-            });
+            };            
         });
     };
 };
